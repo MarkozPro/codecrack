@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ proyecto.titulo }} - CodeCrack{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        
+        <a href="{% url 'galeria' %}" class="btn btn-outline-secondary btn-sm mb-3">
+            <i class="fas fa-arrow-left"></i> Volver a la galería
+        </a>
+
+        <div class="card p-4">
+            <div class="row">
+                <div class="col-md-6">
+                    {% if proyecto.imagen %}
+                        <img src="{{ proyecto.imagen.url }}" class="img-fluid rounded" style="width: 100%; object-fit: cover;">
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <h1>{{ proyecto.titulo }}</h1>
+                    
+                    <div class="mb-3">
+                        {% if proyecto.categoria %}
+                            <span class="badge bg-primary p-2">{{ proyecto.get_categoria_display }}</span>
+                        {% endif %}
+                        {% if proyecto.herramientas %}
+                            <span class="badge bg-secondary p-2">{{ proyecto.herramientas }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <p class="text-muted">
+                        👤 <a href="{% url 'perfil_publico' proyecto.estudiante.username %}">{{ proyecto.estudiante.username }}</a> 
+                        | {{ proyecto.grado_estudiante }} 
+                        | {{ proyecto.fecha_subida|date:"d/m/Y" }}
+                    </p>
+                    
+                    <div class="d-flex gap-3 mb-3">
+                        <span>❤️ {{ proyecto.likes }} likes</span>
+                        <span>👁️ {{ proyecto.vistas }} vistas</span>
+                        <span>📥 {{ proyecto.descargas }} descargas</span>
+                    </div>
+                    
+                    <h5>Descripción</h5>
+                    <p>{{ proyecto.descripcion }}</p>
+                    
+                    {% if proyecto.descripcion_larga %}
+                        <h5>Cómo lo hice</h5>
+                        <p>{{ proyecto.descripcion_larga|linebreaks }}</p>
+                    {% endif %}
+                    
+                    <hr>
+                    
+                    <!-- Botones de descarga -->
+                    <div class="d-grid gap-2">
+                        {% if proyecto.archivo %}
+                            <a href="{% url 'descargar_proyecto' proyecto.id %}" class="btn btn-success">
+                                <i class="fas fa-download"></i> Descargar proyecto ({{ proyecto.archivo.name|slice:"20:" }})
+                            </a>
+                        {% endif %}
+                        
+                        {% if proyecto.enlace_externo %}
+                            <a href="{{ proyecto.enlace_externo }}" target="_blank" class="btn btn-info">
+                                <i class="fas fa-external-link-alt"></i> Ver enlace externo
+                            </a>
+                        {% endif %}
+                        
+                        {% if user.is_authenticated and user != proyecto.estudiante %}
+                            <a href="{% url 'like_proyecto' proyecto.id %}" class="btn btn-outline-danger">
+                                <i class="fas fa-heart"></i> Me gusta ({{ proyecto.likes }})
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

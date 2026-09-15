@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Email Enviado - CodeCrack{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4 text-center">
+            <div style="font-size: 4rem;">📧</div>
+            <h2>¡Revisa tu correo!</h2>
+            <p>Te enviamos un email con un enlace para confirmar tu cuenta.</p>
+            <p class="text-muted">
+                <i class="fas fa-info-circle"></i> 
+                Si no lo ves, revisa la carpeta de <strong>spam</strong> o <strong>correo no deseado</strong>.
+            </p>
+            <hr>
+            <p class="small text-muted">
+                El enlace expira en <strong>24 horas</strong>.
+            </p>
+            <div class="d-grid gap-2 mt-3">
+                <a href="{% url 'login' %}" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Ir a Iniciar Sesión
+                </a>
+                <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-home"></i> Volver al Inicio
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ proyecto.titulo }} - CodeCrack{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card p-4">
+            {% if proyecto.imagen_resultado %}
+                <img src="{{ proyecto.imagen_resultado.url }}" class="img-fluid rounded mb-4">
+            {% endif %}
+            <h1>{{ proyecto.titulo }}</h1>
+            <div class="mb-3">
+                <span class="badge bg-primary">{{ proyecto.get_categoria_display }}</span>
+                <span class="badge bg-warning text-dark">{{ proyecto.get_dificultad_display }}</span>
+                <span class="badge bg-secondary"><i class="far fa-clock"></i> {{ proyecto.tiempo_estimado }}</span>
+            </div>
+
+            <!-- ✅ AUTOR CLICABLE -->
+            {% if proyecto.autor %}
+                <p class="text-muted">
+                    👤 Creado por: 
+                    <a href="{% url 'perfil_publico' proyecto.autor.username %}" class="text-decoration-none">
+                        <strong>{{ proyecto.autor.username }}</strong>
+                    </a>
+                </p>
+            {% endif %}
+
+            <p><strong>Descripción:</strong></p>
+            <p>{{ proyecto.descripcion_completa|linebreaks }}</p>
+
+            <p><strong>🛠️ Herramientas necesarias:</strong></p>
+            <p>{{ proyecto.herramientas_necesarias|linebreaks }}</p>
+
+            <p><strong>📝 Pasos:</strong></p>
+            <p>{{ proyecto.pasos|linebreaks }}</p>
+
+            {% if proyecto.video_enlace %}
+                <div class="mt-3">
+                    <p><strong>🎥 Video:</strong></p>
+                    <a href="{{ proyecto.video_enlace }}" target="_blank" class="btn btn-info">
+                        <i class="fas fa-play"></i> Ver Video
+                    </a>
+                </div>
+            {% endif %}
+
+            <div class="d-flex gap-2 mt-4">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'completar_proyecto' proyecto.id %}" class="btn btn-success">
+                        <i class="fas fa-check"></i> Completar (+50 XP)
+                    </a>
+                    <a href="{% url 'toggle_favorito' proyecto.id %}" class="btn btn-warning">
+                        {% if user in proyecto.favoritos.all %}
+                            <i class="fas fa-star"></i> Quitar Favorito
+                        {% else %}
+                            <i class="far fa-star"></i> Agregar Favorito
+                        {% endif %}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- COMENTARIOS -->
+        <div class="card mt-4 p-4">
+            <h4><i class="fas fa-comments"></i> Comentarios</h4>
+            {% if user.is_authenticated %}
+                <form method="post" action="{% url 'comentar_proyecto' proyecto.id %}">
+                    {% csrf_token %}
+                    <textarea name="texto" class="form-control" rows="3" placeholder="Escribe tu comentario..." required></textarea>
+                    <button type="submit" class="btn btn-primary mt-2">
+                        <i class="fas fa-paper-plane"></i> Comentar
+                    </button>
+                </form>
+            {% else %}
+                <p>Inicia sesión para comentar. <a href="{% url 'login' %}">Iniciar sesión</a></p>
+            {% endif %}
+            <hr>
+            {% for comentario in comentarios %}
+                <div class="d-flex mb-3">
+                    <div class="me-2">
+                        <a href="{% url 'perfil_publico' comentario.usuario.username %}">
+                            {% if comentario.usuario.perfil.foto_perfil %}
+                                <img src="{{ comentario.usuario.perfil.foto_perfil.url }}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+                            {% else %}
+                                <div style="width:40px;height:40px;border-radius:50%;background:var(--azul);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;">
+                                    {{ comentario.usuario.username|first|upper }}
+                                </div>
+                            {% endif %}
+                        </a>
+                    </div>
+                    <div>
+                        <!-- ✅ NOMBRE CLICABLE -->
+                        <a href="{% url 'perfil_publico' comentario.usuario.username %}" class="text-decoration-none">
+                            <strong>{{ comentario.usuario.username }}</strong>
+                        </a>
+                        <p class="mb-0">{{ comentario.texto }}</p>
+                        <small class="text-muted">{{ comentario.fecha_creacion|timesince }} atrás</small>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No hay comentarios aún. Sé el primero en comentar.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

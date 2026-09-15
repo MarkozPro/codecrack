@@ -1,0 +1,1 @@
+﻿web: gunicorn codecrack.wsgi --log-file -

@@ -1,0 +1,322 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inicio - CodeCrack 🚀{% endblock %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+    <!-- ===== HOME PARA USUARIOS LOGUEADOS ===== -->
+
+    <!-- HERO DE BIENVENIDA -->
+    <div class="hero-bienvenida mb-5">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-4 fw-bold mb-2">
+                    ¡Hola, <span style="background: linear-gradient(135deg, var(--verde), var(--azul)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">{{ user.username }}</span>! 👋
+                </h1>
+                <p class="lead mb-3">
+                    {% if user_racha > 0 %}
+                        🔥 Llevas <strong>{{ user_racha }}</strong> días seguidos programando
+                    {% else %}
+                        ¡Comienza tu aventura en la programación! 🚀
+                    {% endif %}
+                </p>
+                <div class="mb-3">
+                    <span class="badge bg-primary p-2">🎯 {{ user_nivel }}</span>
+                    <span class="badge bg-success p-2">⚡ {{ user_xp }} XP</span>
+                    {% if user_tipo %}
+                        <span class="badge bg-info p-2">🧠 {{ user_tipo }}</span>
+                    {% endif %}
+                </div>
+                <a href="{% url 'progreso' %}" class="btn btn-primary">
+                    <i class="fas fa-chart-line"></i> Ver mi progreso
+                </a>
+            </div>
+            <div class="col-md-4 text-center d-none d-md-block">
+                <div style="font-size: 8rem;">🚀</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACCESOS RÁPIDOS -->
+    <h2 class="section-titulo mb-4">
+        <i class="fas fa-bolt text-warning"></i> Accesos Rápidos
+    </h2>
+    <div class="row mb-5">
+        <div class="col-md-4 col-6 mb-3">
+            <a href="{% url 'proyectos' %}" class="acceso-card">
+                <div class="acceso-icono" style="background: rgba(37, 99, 235, 0.15); color: #2563EB;">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h5>Proyectos</h5>
+                <p>Aprende haciendo</p>
+            </a>
+        </div>
+        <div class="col-md-4 col-6 mb-3">
+            <a href="{% url 'chat' %}" class="acceso-card">
+                <div class="acceso-icono" style="background: rgba(16, 185, 129, 0.15); color: #10B981;">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h5>Chat</h5>
+                <p>Habla con la comunidad</p>
+            </a>
+        </div>
+        <div class="col-md-4 col-6 mb-3">
+            <a href="{% url 'foro' %}" class="acceso-card">
+                <div class="acceso-icono" style="background: rgba(245, 158, 11, 0.15); color: #F59E0B;">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+                <h5>Foro</h5>
+                <p>Preguntas y respuestas</p>
+            </a>
+        </div>
+        <div class="col-md-4 col-6 mb-3">
+            <a href="{% url 'desafios' %}" class="acceso-card">
+                <div class="acceso-icono" style="background: rgba(124, 58, 237, 0.15); color: #7C3AED;">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <h5>Desafíos</h5>
+                <p>Gana XP extra</p>
+            </a>
+        </div>
+        <div class="col-md-4 col-6 mb-3">
+            <a href="{% url 'ranking' %}" class="acceso-card">
+                <div class="acceso-icono" style="background: rgba(239, 68, 68, 0.15); color: #EF4444;">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h5>Ranking</h5>
+                <p>Los mejores usuarios</p>
+            </a>
+        </div>
+        <div class="col-md-4 col-6 mb-3">
+            <a href="{% url 'bandeja_entrada' %}" class="acceso-card">
+                <div class="acceso-icono" style="background: rgba(6, 182, 212, 0.15); color: #06B6D4;">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h5>Mensajes</h5>
+                <p>Privados</p>
+            </a>
+        </div>
+    </div>
+
+    <!-- MIS ESTADÍSTICAS -->
+    <h2 class="section-titulo mb-4">
+        <i class="fas fa-chart-bar text-primary"></i> Mis Estadísticas
+    </h2>
+    <div class="row mb-5">
+        <div class="col-md-3 col-6 mb-3">
+            <div class="stat-card-grande">
+                <div class="stat-icono" style="color: #2563EB;">⚡</div>
+                <div class="stat-numero">{{ user_xp }}</div>
+                <div class="stat-label">XP Total</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="stat-card-grande">
+                <div class="stat-icono" style="color: #F59E0B;">🔥</div>
+                <div class="stat-numero">{{ user_racha }}</div>
+                <div class="stat-label">Días de Racha</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="stat-card-grande">
+                <div class="stat-icono" style="color: #10B981;">📦</div>
+                <div class="stat-numero">{{ proyectos_completados_count|default:0 }}</div>
+                <div class="stat-label">Proyectos</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="stat-card-grande">
+                <div class="stat-icono" style="color: #7C3AED;">🎯</div>
+                <div class="stat-numero">{{ desafios_completados_count|default:0 }}</div>
+                <div class="stat-label">Desafíos</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROYECTOS DESTACADOS -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="section-titulo mb-0">
+            <i class="fas fa-fire text-warning"></i> Proyectos Destacados
+        </h2>
+        <a href="{% url 'proyectos' %}" class="btn btn-outline-primary btn-sm">
+            Ver todos <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+    <div class="row mb-5">
+        {% for proyecto in proyectos_destacados %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if proyecto.imagen_resultado %}
+                        <img src="{{ proyecto.imagen_resultado.url }}" class="card-img-top" style="height: 180px; object-fit: cover;">
+                    {% else %}
+                        <div class="card-img-top d-flex align-items-center justify-content-center" style="height: 180px; background: rgba(37, 99, 235, 0.1);">
+                            <span style="font-size: 3rem;">{{ proyecto.categoria|slice:":3" }}</span>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ proyecto.titulo }}</h5>
+                        <p class="card-text small">{{ proyecto.descripcion_corta|truncatechars:80 }}</p>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="badge bg-primary">{{ proyecto.get_categoria_display }}</span>
+                            <span class="badge bg-warning text-dark">{{ proyecto.get_dificultad_display }}</span>
+                        </div>
+                        <a href="{% url 'proyecto_detalle' proyecto.id %}" class="btn btn-primary btn-sm w-100">
+                            Ver Proyecto
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    📭 No hay proyectos aún. ¡Vuelve pronto!
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- EVENTOS PRÓXIMOS -->
+    {% if eventos %}
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-titulo mb-0">
+                <i class="fas fa-calendar text-danger"></i> Próximos Eventos
+            </h2>
+            <a href="{% url 'eventos' %}" class="btn btn-outline-primary btn-sm">
+                Ver todos <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        <div class="row mb-5">
+            {% for evento in eventos %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="me-3" style="font-size: 2rem;">📅</div>
+                                <div>
+                                    <h5 class="mb-0">{{ evento.titulo }}</h5>
+                                    <small class="text-muted">{{ evento.fecha|date:"d/m/Y" }}</small>
+                                </div>
+                            </div>
+                            <p class="small mb-2">{{ evento.descripcion|truncatechars:80 }}</p>
+                            <p class="small mb-2">
+                                <i class="fas fa-map-marker-alt"></i> {{ evento.lugar }}
+                            </p>
+                            <p class="small mb-2">
+                                <i class="fas fa-users"></i> {{ evento.cupos_disponibles }} cupos disponibles
+                            </p>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'inscribir_evento' evento.id %}" class="btn btn-success btn-sm w-100">
+                                    <i class="fas fa-check"></i> Inscribirme
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- TOP 3 RANKING -->
+    {% if top_usuarios %}
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-titulo mb-0">
+                <i class="fas fa-trophy text-warning"></i> Top 3 del Ranking
+            </h2>
+            <a href="{% url 'ranking' %}" class="btn btn-outline-primary btn-sm">
+                Ver ranking completo <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        <div class="row mb-4">
+            {% for u in top_usuarios %}
+                <div class="col-md-4 mb-4">
+                    <div class="card p-3 text-center {% if forloop.counter == 1 %}border-warning{% elif forloop.counter == 2 %}border-secondary{% else %}border-danger{% endif %}" style="border-width: 2px;">
+                        <div style="font-size: 3rem;">
+                            {% if forloop.counter == 1 %}🥇
+                            {% elif forloop.counter == 2 %}🥈
+                            {% else %}🥉
+                            {% endif %}
+                        </div>
+                        <h5 class="mb-1">{{ u.username }}</h5>
+                        <p class="text-muted mb-0">
+                            🏆 {{ u.total_xp|default:0 }} XP
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+{% else %}
+    <!-- ===== HOME PARA INVITADOS (SIN CAMBIOS) ===== -->
+    <div class="hero-gradient text-center">
+        <h1 class="display-1 fw-bold">🚀 CodeCrack</h1>
+        <p class="display-6 mt-3">¡Descubre el mundo de la programación!</p>
+        <div class="frase mx-auto my-4" style="max-width: 700px;">
+            "{{ frase_texto }}"
+            <br>
+            <small class="text-muted">— {{ frase_autor }}</small>
+        </div>
+        <a href="{% url 'registro' %}" class="btn btn-success btn-lg mt-3">
+            <i class="fas fa-rocket"></i> ¡Únete ahora!
+        </a>
+        <a href="{% url 'acerca_de' %}" class="btn btn-outline-primary btn-lg mt-3 ms-2">
+            <i class="fas fa-info-circle"></i> Conocer más
+        </a>
+    </div>
+
+    <!-- Estadísticas rápidas -->
+    <div class="row text-center my-5">
+        <div class="col-md-4">
+            <h2 class="text-primary fw-bold">{{ total_estudiantes }}</h2>
+            <p>Estudiantes activos</p>
+        </div>
+        <div class="col-md-4">
+            <h2 class="text-success fw-bold">{{ proyectos_destacados|length }}</h2>
+            <p>Proyectos disponibles</p>
+        </div>
+        <div class="col-md-4">
+            <h2 class="text-warning fw-bold">{{ eventos|length }}</h2>
+            <p>Eventos próximos</p>
+        </div>
+    </div>
+
+    <!-- Proyectos destacados -->
+    <h2 class="text-center mb-4">🔥 Proyectos Destacados</h2>
+    <div class="row">
+        {% for proyecto in proyectos_destacados %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if proyecto.imagen_resultado %}
+                        <img src="{{ proyecto.imagen_resultado.url }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <div class="card-img-top d-flex align-items-center justify-content-center" style="height: 200px; background: rgba(37, 99, 235, 0.1);">
+                            <span style="font-size: 4rem;">{{ proyecto.categoria|slice:":3" }}</span>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ proyecto.titulo }}</h5>
+                        <p class="card-text">{{ proyecto.descripcion_corta|truncatechars:80 }}</p>
+                        <a href="{% url 'proyecto_detalle' proyecto.id %}" class="btn btn-primary w-100">
+                            <i class="fas fa-eye"></i> Ver Proyecto
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-center">No hay proyectos aún. ¡Vuelve pronto!</p>
+        {% endfor %}
+    </div>
+
+    <!-- Llamada a la acción -->
+    <div class="text-center mt-5 p-5" style="background: rgba(37, 99, 235, 0.05); border-radius: 30px; border: 1px solid rgba(37, 99, 235, 0.2);">
+        <h3>¿Quieres empezar tu aventura en la programación?</h3>
+        <p class="mb-3">Únete a cientos de estudiantes que ya están aprendiendo.</p>
+        <a href="{% url 'registro' %}" class="btn btn-success btn-lg">
+            <i class="fas fa-rocket"></i> ¡Regístrate ahora!
+        </a>
+    </div>
+{% endif %}
+
+{% endblock %}

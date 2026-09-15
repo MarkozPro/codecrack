@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block title %}Acerca de CodeCrack{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card p-4">
+            <div class="text-center">
+                <div style="font-size: 5rem;">🚀</div>
+                <h1 class="display-4">Acerca de CodeCrack</h1>
+                <p class="text-muted">Conoce más sobre este proyecto y su creador</p>
+            </div>
+            
+            <hr>
+
+            <h2><i class="fas fa-info-circle text-primary"></i> ¿Qué es CodeCrack?</h2>
+            <p>
+                <strong>CodeCrack</strong> es un proyecto educativo diseñado para 
+                estudiantes de <strong>10mo a 12mo grado</strong> que quieren 
+                descubrir el mundo de la programación de una forma 
+                <strong>práctica, divertida y motivadora</strong>.
+            </p>
+            <p>
+                Este sitio web ofrece una plataforma donde los jóvenes pueden 
+                <strong>aprender, practicar y compartir</strong> sus proyectos 
+                con una comunidad de estudiantes.
+            </p>
+
+            <h2 class="mt-4"><i class="fas fa-bullseye text-success"></i> ¿Por qué es importante?</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card p-3 mb-3" style="background: rgba(37,99,235,0.05);">
+                        <h5>🧠 Pensamiento Lógico</h5>
+                        <p class="small">Desarrolla habilidades para resolver problemas de forma estructurada.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-3 mb-3" style="background: rgba(16,185,129,0.05);">
+                        <h5>🎨 Creatividad</h5>
+                        <p class="small">Permite crear soluciones innovadoras y expresar ideas.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-3 mb-3" style="background: rgba(245,158,11,0.05);">
+                        <h5>🚀 Futuro</h5>
+                        <p class="small">La programación es una habilidad esencial para el futuro laboral.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h4><i class="fas fa-flag text-warning"></i> Misión</h4>
+                    <p>
+                        Inspirar a la próxima generación de programadores en Cuba, 
+                        mostrando que la tecnología es accesible y que cualquier 
+                        persona puede aprender a crear cosas increíbles.
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <h4><i class="fas fa-eye text-primary"></i> Visión</h4>
+                    <p>
+                        Crear una comunidad de jóvenes programadores que compartan 
+                        proyectos, aprendan juntos y se motiven mutuamente a 
+                        seguir creciendo en el mundo de la tecnología.
+                    </p>
+                </div>
+            </div>
+
+            <h2 class="mt-4"><i class="fas fa-code text-primary"></i> Tecnologías usadas</h2>
+            <div class="d-flex flex-wrap gap-2">
+                <span class="badge bg-primary" style="font-size: 1rem;">🐍 Django</span>
+                <span class="badge bg-success" style="font-size: 1rem;">🐍 Python</span>
+                <span class="badge bg-info" style="font-size: 1rem;">🎨 Bootstrap 5</span>
+                <span class="badge bg-warning text-dark" style="font-size: 1rem;">📄 HTML5</span>
+                <span class="badge bg-danger" style="font-size: 1rem;">🎨 CSS3</span>
+                <span class="badge bg-secondary" style="font-size: 1rem;">🗄️ SQLite</span>
+            </div>
+
+            <hr>
+
+            <h2><i class="fas fa-user-astronaut text-danger"></i> Sobre el Creador</h2>
+            <div class="row">
+                <div class="col-md-3 text-center">
+                    <div style="font-size: 6rem; background: rgba(37, 99, 235, 0.1); border-radius: 50%; width: 150px; height: 150px; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
+                        🧑‍💻
+                    </div>
+                    <h4 class="mt-3">Marcos</h4>
+                    <p class="text-muted">Desarrollador Web y Creador de CodeCrack</p>
+                </div>
+                <div class="col-md-9">
+                    <p>
+                        <strong>Marcos</strong> es un apasionado por la tecnología y la educación. 
+                        Creó <strong>CodeCrack</strong> con el objetivo de acercar la programación 
+                        a los jóvenes cubanos, mostrando que <strong>cualquiera puede aprender a programar</strong> 
+                        con motivación y las herramientas adecuadas.
+                    </p>
+                    <p>
+                        Cree firmemente que la <strong>educación tecnológica</strong> es clave para 
+                        el desarrollo personal y profesional, y que sitios como CodeCrack pueden 
+                        ser el primer paso hacia un futuro lleno de posibilidades.
+                    </p>
+                    <p class="text-muted">
+                        <i class="fas fa-quote-left"></i> 
+                        "La programación es el superpoder del siglo XXI. Todos podemos aprender a usarla."
+                        <i class="fas fa-quote-right"></i>
+                    </p>
+                </div>
+            </div>
+            
+            <hr>
+            
+            <div class="text-center">
+                <h4><i class="fas fa-envelope text-success"></i> ¿Quieres contactar al creador?</h4>
+                <p>¿Tienes alguna pregunta, sugerencia o idea? ¡Escríbeme!</p>
+                <a href="{% url 'contacto' %}" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i> Enviar mensaje
+                </a>
+                <a href="{% url 'home' %}" class="btn btn-outline-secondary ms-2">
+                    <i class="fas fa-home"></i> Volver al inicio
+                </a>
+            </div>
+            
+            <div class="text-center mt-4">
+                <p class="small text-muted">
+                    <i class="fas fa-copyright"></i> 2026 CodeCrack - Creado con ❤️ y mucho ☕
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

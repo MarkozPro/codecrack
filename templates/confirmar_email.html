@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirmar Email - CodeCrack{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4 text-center">
+            <div style="font-size: 4rem;">✅</div>
+            <h2>¡Email Confirmado!</h2>
+            <p>Tu cuenta ha sido activada correctamente.</p>
+            <a href="{% url 'login' %}" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

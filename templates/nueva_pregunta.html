@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Nueva Pregunta - CodeCrack{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card p-4">
+            <h2 class="text-center mb-4"><i class="fas fa-question-circle"></i> Hacer una Pregunta</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary w-100 mt-3">
+                    <i class="fas fa-paper-plane"></i> Publicar Pregunta
+                </button>
+            </form>
+            <a href="{% url 'foro' %}" class="btn btn-secondary w-100 mt-2">Cancelar</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

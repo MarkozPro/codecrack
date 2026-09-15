@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ perfil_usuario.username }} - CodeCrack{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+    }
+    .stat-numero {
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1;
+        margin-bottom: 5px;
+        color: #F1F5F9;
+    }
+    .stat-texto {
+        font-size: 0.85rem;
+        color: #94A3B8;
+        display: block;
+        font-weight: 500;
+    }
+    .stat-link {
+        text-decoration: none;
+    }
+    .stat-link .stat-numero {
+        color: #60A5FA !important;
+    }
+    .stat-link:hover .stat-numero {
+        color: #A78BFA !important;
+    }
+    .stat-link .stat-texto {
+        color: #94A3B8;
+    }
+    .stat-link:hover .stat-texto {
+        color: #F1F5F9;
+    }
+    .texto-info {
+        color: #94A3B8;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+
+        <div class="card p-4 mb-4">
+            <div class="row align-items-center">
+                <div class="col-md-3 text-center">
+                    {% if perfil.foto_perfil %}
+                        <img src="{{ perfil.foto_perfil.url }}" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 150px; height: 150px; background: var(--azul); font-size: 4rem;">
+                            {{ perfil_usuario.username|first|upper }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <h2>{{ perfil_usuario.username }}</h2>
+                    {% if perfil.bio %}
+                        <p class="texto-info">{{ perfil.bio }}</p>
+                    {% endif %}
+                    <div class="mt-2">
+                        <span class="badge-grado">{{ perfil.grado }}</span>
+                        <span class="badge bg-secondary">{{ perfil.get_nivel_programacion_display }}</span>
+                        {% if perfil.tipo_programador %}
+                            <span class="badge bg-info">🧠 {{ perfil.get_tipo_programador_display }}</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- ✅ ESTADÍSTICAS CON EMOJIS Y TEXTOS VISIBLES -->
+                    <div class="row mt-3 text-center">
+                        <div class="col-4">
+                            <div class="stat-item">
+                                <div class="stat-numero">⚡ {{ perfil.xp_total }}</div>
+                                <span class="stat-texto">XP</span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <a href="{% url 'lista_seguidores' perfil_usuario.username %}" class="stat-link">
+                                <div class="stat-item">
+                                    <div class="stat-numero">👥 {{ perfil.total_seguidores }}</div>
+                                    <span class="stat-texto">Seguidores</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-4">
+                            <a href="{% url 'lista_siguiendo' perfil_usuario.username %}" class="stat-link">
+                                <div class="stat-item">
+                                    <div class="stat-numero">👤 {{ perfil.total_siguiendo }}</div>
+                                    <span class="stat-texto">Siguiendo</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    {% if user.is_authenticated and user != perfil_usuario %}
+                        <a href="{% url 'seguir_usuario' perfil_usuario.username %}" class="btn {% if siguiendo %}btn-outline-danger{% else %}btn-primary{% endif %} w-100 mb-2">
+                            {% if siguiendo %}
+                                <i class="fas fa-user-minus"></i> Dejar de seguir
+                            {% else %}
+                                <i class="fas fa-user-plus"></i> Seguir
+                            {% endif %}
+                        </a>
+                        <a href="{% url 'conversacion' perfil_usuario.username %}" class="btn btn-success w-100">
+                            <i class="fas fa-envelope"></i> Mensaje
+                        </a>
+                    {% elif user == perfil_usuario %}
+                        <a href="{% url 'editar_perfil' %}" class="btn btn-primary w-100">
+                            <i class="fas fa-edit"></i> Editar mi perfil
+                        </a>
+                    {% else %}
+                        <p class="texto-info">Inicia sesión para seguir</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-4 mb-4">
+            <h4>🎯 Nivel: {{ perfil.get_nivel_nombre }}</h4>
+            <p>🔥 Racha: {{ perfil.racha_dias }} días</p>
+            <p class="texto-info">Miembro desde: {{ perfil.fecha_registro|date:"d/m/Y" }}</p>
+        </div>
+
+        <div class="card p-4 mb-4">
+            <h4>🏅 Insignias ({{ insignias.count }})</h4>
+            <div class="row">
+                {% for iu in insignias %}
+                    <div class="col-md-2 col-4 text-center mb-3">
+                        <div class="p-3" style="background: rgba(37, 99, 235, 0.1); border-radius: 12px;">
+                            <span style="font-size: 2.5rem;">{{ iu.insignia.icono }}</span>
+                            <p class="small mt-2 mb-0">{{ iu.insignia.nombre }}</p>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="texto-info">Aún no tiene insignias.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card p-4 mb-4">
+            <h4>📦 Proyectos completados ({{ proyectos_completados.count }})</h4>
+            <div class="row">
+                {% for pc in proyectos_completados %}
+                    <div class="col-md-4 mb-3">
+                        <div class="p-3" style="background: rgba(255,255,255,0.05); border-radius: 10px;">
+                            <strong>{{ pc.proyecto.titulo }}</strong>
+                            <br><small class="texto-info">{{ pc.fecha_completado|date:"d/m/Y" }}</small>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="texto-info">Aún no ha completado proyectos.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if proyectos_subidos %}
+            <div class="card p-4 mb-4">
+                <h4>🎨 Proyectos subidos ({{ proyectos_subidos.count }})</h4>
+                <div class="row">
+                    {% for p in proyectos_subidos %}
+                        <div class="col-md-4 mb-3">
+                            <a href="{% url 'proyecto_estudiante_detalle' p.id %}" class="text-decoration-none">
+                                <div class="p-3" style="background: rgba(255,255,255,0.05); border-radius: 10px;">
+                                    <strong>{{ p.titulo }}</strong>
+                                    <br><small class="texto-info">{{ p.fecha_subida|date:"d/m/Y" }}</small>
+                                </div>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="card p-4">
+            <h4>💬 Últimos comentarios</h4>
+            {% for c in comentarios %}
+                <div class="mb-3 p-3" style="background: rgba(255,255,255,0.05); border-radius: 10px;">
+                    <p class="mb-1">{{ c.texto }}</p>
+                    <small class="texto-info">{{ c.fecha_creacion|timesince }} atrás</small>
+                </div>
+            {% empty %}
+                <p class="texto-info">Aún no ha comentado.</p>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

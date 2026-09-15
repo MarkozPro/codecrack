@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}Mi Perfil - CodeCrack{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+    }
+    .stat-numero {
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1;
+        margin-bottom: 5px;
+        color: #F1F5F9;
+    }
+    .stat-texto {
+        font-size: 0.85rem;
+        color: #94A3B8;
+        display: block;
+        font-weight: 500;
+    }
+    .stat-link { text-decoration: none; }
+    .stat-link .stat-numero { color: #60A5FA !important; }
+    .stat-link:hover .stat-numero { color: #A78BFA !important; }
+    .stat-link:hover .stat-texto { color: #F1F5F9; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+
+        {% if perfil.estado != 'activo' %}
+            <div class="alert alert-warning">
+                <h5>⚠️ Estado de tu cuenta: {{ perfil.get_estado_display }}</h5>
+                {% if perfil.motivo_sancion %}
+                    <p><strong>Motivo:</strong> {{ perfil.motivo_sancion }}</p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <div class="card p-4">
+            <div class="text-center">
+                {% if perfil.foto_perfil %}
+                    <img src="{{ perfil.foto_perfil.url }}" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                {% else %}
+                    <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 150px; height: 150px; background: var(--azul); font-size: 4rem;">
+                        {{ user.username|first|upper }}
+                    </div>
+                {% endif %}
+                <h2 class="mt-3">{{ user.username }}</h2>
+                <p style="color: #94A3B8;">{{ user.email }}</p>
+                <span class="badge-grado">{{ perfil.grado }}</span>
+                <span class="badge bg-secondary">{{ perfil.get_nivel_programacion_display }}</span>
+                {% if perfil.tipo_programador %}
+                    <span class="badge bg-info">🧠 {{ perfil.get_tipo_programador_display }}</span>
+                {% endif %}
+            </div>
+
+            <div class="row mt-4 text-center">
+                <div class="col-3">
+                    <div class="stat-item">
+                        <div class="stat-numero">⚡ {{ perfil.xp_total }}</div>
+                        <span class="stat-texto">XP</span>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="stat-item">
+                        <div class="stat-numero">🔥 {{ perfil.racha_dias }}</div>
+                        <span class="stat-texto">Racha</span>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <a href="{% url 'lista_seguidores' user.username %}" class="stat-link">
+                        <div class="stat-item">
+                            <div class="stat-numero">👥 {{ perfil.total_seguidores }}</div>
+                            <span class="stat-texto">Seguidores</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-3">
+                    <a href="{% url 'lista_siguiendo' user.username %}" class="stat-link">
+                        <div class="stat-item">
+                            <div class="stat-numero">👤 {{ perfil.total_siguiendo }}</div>
+                            <span class="stat-texto">Siguiendo</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <hr style="border-color: rgba(255,255,255,0.1);">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Edad:</strong> {{ perfil.edad }} años</p>
+                    <p><strong>Nivel:</strong> {{ perfil.get_nivel_nombre }}</p>
+                    <p><strong>Proyectos subidos:</strong> {{ proyectos_subidos|default:0 }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Proyectos vistos:</strong> {{ proyectos_vistos }}</p>
+                    <p><strong>Proyectos completados:</strong> {{ proyectos_completados }}</p>
+                    <p><strong>Comentarios:</strong> {{ comentarios }}</p>
+                </div>
+            </div>
+
+            {% if perfil.bio %}
+                <hr style="border-color: rgba(255,255,255,0.1);">
+                <p><strong>Sobre mí:</strong></p>
+                <p style="color: #94A3B8;">{{ perfil.bio }}</p>
+            {% endif %}
+
+            <div class="d-grid gap-2 mt-3">
+                <a href="{% url 'perfil_publico' user.username %}" class="btn btn-outline-primary">
+                    <i class="fas fa-eye"></i> Ver mi perfil público
+                </a>
+                <a href="{% url 'editar_perfil' %}" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Editar Perfil
+                </a>
+                <a href="{% url 'cambiar_password' %}" class="btn btn-warning">
+                    <i class="fas fa-key"></i> Cambiar Contraseña
+                </a>
+                <a href="{% url 'logout' %}" class="btn btn-danger">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

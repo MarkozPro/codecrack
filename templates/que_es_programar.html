@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}¿Qué es Programar? - CodeCrack{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <h1 class="text-center"><i class="fas fa-question-circle"></i> ¿Qué es programar?</h1>
+        <div class="card p-4 mt-4">
+            <h3>💻 Programar es... dar instrucciones a una computadora</h3>
+            <p>Imagina que le das una receta paso a paso a un robot. La programación es exactamente eso: le dices a la computadora qué hacer, cómo hacerlo y en qué orden.</p>
+            
+            <h4 class="mt-4">🎯 Analogía divertida</h4>
+            <p>Programar es como ser un <strong>director de orquesta</strong> que le dice a cada músico (la computadora) qué nota tocar y cuándo. ¡El resultado es una sinfonía de código!</p>
+            
+            <div class="text-center mt-4">
+                <a href="{% url 'registro' %}" class="btn btn-success btn-lg">
+                    <i class="fas fa-rocket"></i> ¡Quiero intentarlo!
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

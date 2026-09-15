@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CodeCrack 🚀{% endblock %}</title>
+
+    <meta name="description" content="CodeCrack - Aprende a programar jugando. Proyectos, desafíos, ranking y comunidad para estudiantes.">
+    <meta name="keywords" content="programación, aprender a programar, Cuba, estudiantes, proyectos, Django">
+    <meta name="author" content="Marcos">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --azul: #2563EB;
+            --morado: #7C3AED;
+            --naranja: #F59E0B;
+            --verde: #10B981;
+            --rojo: #EF4444;
+            --cyan: #06B6D4;
+            --fondo: #0F172A;
+            --texto: #F1F5F9;
+        }
+        * { font-family: 'Poppins', sans-serif; }
+        body {
+            background: var(--fondo);
+            color: var(--texto);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid rgba(37, 99, 235, 0.3);
+            padding: 0;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+        }
+        .navbar-brand {
+            font-weight: 900;
+            font-size: 1.6rem;
+            background: linear-gradient(135deg, var(--azul), var(--morado));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding: 15px 0;
+        }
+        .navbar-nav { align-items: center; }
+        .navbar-nav .nav-item { position: relative; }
+        .navbar-nav .nav-link {
+            color: var(--texto) !important;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 20px 15px !important;
+            transition: all 0.3s;
+            position: relative;
+            border-bottom: 3px solid transparent;
+        }
+        .navbar-nav .nav-link:hover {
+            color: var(--azul) !important;
+            border-bottom-color: var(--azul);
+        }
+        .navbar-nav .dropdown-toggle::after {
+            margin-left: 5px;
+            font-size: 0.7rem;
+        }
+
+        .navbar-nav .dropdown-menu {
+            background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(37, 99, 235, 0.3);
+            border-radius: 0 0 12px 12px;
+            padding: 10px 0;
+            margin-top: 0;
+            min-width: 220px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: fadeInMenu 0.3s;
+        }
+
+        @keyframes fadeInMenu {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .navbar-nav .dropdown-menu .dropdown-item {
+            color: var(--texto);
+            padding: 12px 20px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+        .navbar-nav .dropdown-menu .dropdown-item:hover {
+            background: rgba(37, 99, 235, 0.15);
+            color: var(--azul);
+            border-left-color: var(--azul);
+            padding-left: 25px;
+        }
+        .navbar-nav .dropdown-menu .dropdown-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+            color: var(--azul);
+        }
+
+        @media (min-width: 992px) {
+            .navbar-nav .nav-item.dropdown:hover .dropdown-menu {
+                display: block;
+                margin-top: 0;
+            }
+        }
+
+        /* ===== NOTIFICACIONES Y MENSAJES ===== */
+        .nav-icon-link {
+            position: relative;
+            padding: 20px 12px !important;
+        }
+        .notification-badge {
+            position: absolute;
+            top: 12px;
+            right: 0;
+            background: #EF4444;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        /* Menú desplegable de notificaciones */
+        .notif-dropdown {
+            width: 380px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 0 !important;
+        }
+        .notif-dropdown-header {
+            padding: 15px 20px;
+            background: rgba(37, 99, 235, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #F1F5F9;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .notif-dropdown-item {
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            transition: all 0.2s;
+            color: #F1F5F9;
+            text-decoration: none;
+        }
+        .notif-dropdown-item:hover {
+            background: rgba(37, 99, 235, 0.1);
+            color: #F1F5F9;
+        }
+        .notif-dropdown-item.no-leida {
+            background: rgba(37, 99, 235, 0.08);
+            border-left: 3px solid #2563EB;
+        }
+        .notif-dropdown-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .notif-dropdown-content {
+            flex: 1;
+            min-width: 0;
+        }
+        .notif-dropdown-mensaje {
+            color: #FFFFFF !important;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+        .notif-dropdown-fecha {
+            color: #94A3B8 !important;
+            font-size: 0.72rem;
+        }
+        .notif-dropdown-actions {
+            margin-top: 6px;
+            display: flex;
+            gap: 5px;
+        }
+        .notif-dropdown-btn {
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .notif-dropdown-btn.responder {
+            background: #2563EB;
+            color: white;
+        }
+        .notif-dropdown-btn.responder:hover {
+            background: #7C3AED;
+            color: white;
+        }
+        .notif-dropdown-btn.ver {
+            background: rgba(37, 99, 235, 0.2);
+            color: #60A5FA;
+            border: 1px solid #2563EB;
+        }
+        .notif-dropdown-btn.ver:hover {
+            background: #2563EB;
+            color: white;
+        }
+        .notif-dropdown-footer {
+            padding: 12px 20px;
+            text-align: center;
+            background: rgba(37, 99, 235, 0.1);
+            position: sticky;
+            bottom: 0;
+        }
+        .notif-dropdown-footer a {
+            color: #60A5FA;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .notif-dropdown-footer a:hover {
+            color: #A78BFA;
+        }
+        .notif-vacio {
+            padding: 30px 20px;
+            text-align: center;
+            color: #94A3B8;
+        }
+
+        /* ===== BOTONES ===== */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--azul), var(--morado));
+            border: none;
+            font-weight: 600;
+            padding: 10px 25px;
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, var(--verde), #059669);
+            border: none;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+        .btn-success:hover { transform: scale(1.05); }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            transition: all 0.3s;
+            color: var(--texto);
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+        .card-title { font-weight: 700; }
+
+        .racha {
+            background: linear-gradient(135deg, var(--naranja), #EF4444);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .footer {
+            margin-top: auto;
+            background: rgba(15, 23, 42, 0.8);
+            padding: 30px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .footer a { text-decoration: none; transition: color 0.3s; }
+
+        .badge-grado {
+            background: var(--morado);
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(124, 58, 237, 0.1));
+            padding: 60px 0;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .frase {
+            font-size: 1.5rem;
+            font-style: italic;
+            border-left: 4px solid var(--azul);
+            padding-left: 20px;
+        }
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--azul);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .alert { border-radius: 16px; }
+        .form-control, .form-select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--texto);
+            border-radius: 12px;
+            padding: 12px 20px;
+        }
+        .form-control:focus, .form-select:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--azul);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+            color: var(--texto);
+        }
+        .form-control::placeholder { color: rgba(255, 255, 255, 0.4); }
+        label { font-weight: 600; }
+        .dropdown-item { color: var(--texto); }
+
+        /* ===== ESTILOS DEL HOME LOGUEADO ===== */
+        .hero-bienvenida {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(124, 58, 237, 0.1));
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .section-titulo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--texto);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(37, 99, 235, 0.2);
+            display: inline-block;
+        }
+        .acceso-card {
+            display: block;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 25px 20px;
+            text-decoration: none;
+            color: var(--texto);
+            transition: all 0.3s;
+            text-align: center;
+            height: 100%;
+        }
+        .acceso-card:hover {
+            background: rgba(37, 99, 235, 0.1);
+            border-color: rgba(37, 99, 235, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2);
+            color: var(--texto);
+        }
+        .acceso-icono {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 15px;
+        }
+        .acceso-card h5 {
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--texto);
+        }
+        .acceso-card p {
+            font-size: 0.85rem;
+            color: #94A3B8;
+            margin: 0;
+        }
+        .stat-card-grande {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 25px 20px;
+            text-align: center;
+            transition: all 0.3s;
+            height: 100%;
+        }
+        .stat-card-grande:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .stat-icono {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .stat-numero {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--texto);
+            line-height: 1;
+        }
+        .stat-label {
+            font-size: 0.85rem;
+            color: #94A3B8;
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 991px) {
+            .navbar-nav .nav-link {
+                padding: 12px 15px !important;
+                border-bottom: none;
+                border-left: 3px solid transparent;
+            }
+            .navbar-nav .nav-link:hover {
+                border-left-color: var(--azul);
+                border-bottom: none;
+            }
+            .navbar-nav .dropdown-menu {
+                border-radius: 0;
+                box-shadow: none;
+                background: rgba(30, 41, 59, 0.5);
+            }
+            .notif-dropdown {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">🚀 CodeCrack</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+
+                    <!-- INICIO -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">
+                            <i class="fas fa-home"></i> Inicio
+                        </a>
+                    </li>
+
+                    {% if user.is_authenticated %}
+                        <!-- CONTENIDO -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button">
+                                <i class="fas fa-folder-open"></i> Contenido
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'proyectos' %}"><i class="fas fa-code"></i> Proyectos</a></li>
+                                <li><a class="dropdown-item" href="{% url 'recursos' %}"><i class="fas fa-book"></i> Recursos</a></li>
+                                <li><a class="dropdown-item" href="{% url 'historias' %}"><i class="fas fa-star"></i> Historias</a></li>
+                                <li><a class="dropdown-item" href="{% url 'galeria' %}"><i class="fas fa-images"></i> Galería</a></li>
+                                <li><a class="dropdown-item" href="{% url 'eventos' %}"><i class="fas fa-calendar"></i> Eventos</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- COMUNIDAD -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button">
+                                <i class="fas fa-users"></i> Comunidad
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'chat' %}"><i class="fas fa-comments"></i> Chat</a></li>
+                                <li><a class="dropdown-item" href="{% url 'foro' %}"><i class="fas fa-question-circle"></i> Foro</a></li>
+                                <li><a class="dropdown-item" href="{% url 'ranking' %}"><i class="fas fa-trophy"></i> Ranking</a></li>
+                                <li><a class="dropdown-item" href="{% url 'desafios' %}"><i class="fas fa-tasks"></i> Desafíos</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- MI CUENTA -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button">
+                                <div class="avatar d-inline-block me-1" style="width:28px;height:28px;font-size:0.75rem;">
+                                    {{ user.username|first|upper }}
+                                </div>
+                                {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'perfil' %}"><i class="fas fa-user"></i> Mi Perfil</a></li>
+                                <li><a class="dropdown-item" href="{% url 'perfil_publico' user.username %}"><i class="fas fa-eye"></i> Ver perfil público</a></li>
+                                <li><a class="dropdown-item" href="{% url 'progreso' %}"><i class="fas fa-chart-line"></i> Mi Progreso</a></li>
+                                <li><a class="dropdown-item" href="{% url 'subir_proyecto' %}"><i class="fas fa-upload"></i> Subir Proyecto</a></li>
+                                <li><a class="dropdown-item" href="{% url 'test_vocacional' %}"><i class="fas fa-brain"></i> Test Vocacional</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- ✅ NOTIFICACIONES CON MENÚ DESPLEGABLE -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link nav-icon-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                                <i class="fas fa-bell"></i>
+                                {% if notificaciones_no_leidas > 0 %}
+                                    <span class="notification-badge">{{ notificaciones_no_leidas }}</span>
+                                {% endif %}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end notif-dropdown">
+                                <li class="notif-dropdown-header">
+                                    🔔 Notificaciones
+                                    {% if notificaciones_no_leidas > 0 %}
+                                        <span class="badge bg-danger ms-2">{{ notificaciones_no_leidas }} nuevas</span>
+                                    {% endif %}
+                                </li>
+
+                                {% if notificaciones_recientes %}
+                                    {% for notif in notificaciones_recientes %}
+                                        <li>
+                                            <div class="notif-dropdown-item {% if not notif.leida %}no-leida{% endif %}">
+                                                <div class="notif-dropdown-icon">
+                                                    {% if notif.tipo == 'comentario' %}💬
+                                                    {% elif notif.tipo == 'aprobacion' %}✅
+                                                    {% elif notif.tipo == 'insignia' %}🏅
+                                                    {% elif notif.tipo == 'seguidor' %}👥
+                                                    {% elif notif.tipo == 'desafio' %}🎯
+                                                    {% elif notif.tipo == 'sancion' %}⚠️
+                                                    {% elif notif.tipo == 'mensaje' %}✉️
+                                                    {% elif notif.tipo == 'like' %}❤️
+                                                    {% elif notif.tipo == 'descarga' %}📥
+                                                    {% else %}🔔
+                                                    {% endif %}
+                                                </div>
+                                                <div class="notif-dropdown-content">
+                                                    <div class="notif-dropdown-mensaje">{{ notif.mensaje }}</div>
+                                                    <div class="notif-dropdown-fecha">
+                                                        <i class="far fa-clock"></i> {{ notif.fecha|timesince }} atrás
+                                                    </div>
+                                                    <div class="notif-dropdown-actions">
+                                                        {% if notif.tipo == 'mensaje' and notif.enlace %}
+                                                            <a href="{{ notif.enlace }}" class="notif-dropdown-btn responder">
+                                                                <i class="fas fa-reply"></i> Responder
+                                                            </a>
+                                                        {% endif %}
+                                                        {% if notif.enlace and notif.tipo != 'mensaje' %}
+                                                            <a href="{{ notif.enlace }}" class="notif-dropdown-btn ver">
+                                                                <i class="fas fa-eye"></i> Ver
+                                                            </a>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                {% else %}
+                                    <li>
+                                        <div class="notif-vacio">
+                                            <div style="font-size: 2.5rem;">🔔</div>
+                                            <p style="margin: 10px 0 0;">No tienes notificaciones</p>
+                                        </div>
+                                    </li>
+                                {% endif %}
+
+                                <li class="notif-dropdown-footer">
+                                    <a href="{% url 'notificaciones' %}">
+                                        Ver todas las notificaciones <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- ✅ MENSAJES CON MENÚ DESPLEGABLE -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link nav-icon-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                                <i class="fas fa-envelope"></i>
+                                {% if mensajes_no_leidos > 0 %}
+                                    <span class="notification-badge">{{ mensajes_no_leidos }}</span>
+                                {% endif %}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end notif-dropdown">
+                                <li class="notif-dropdown-header">
+                                    ✉️ Mensajes
+                                    {% if mensajes_no_leidos > 0 %}
+                                        <span class="badge bg-danger ms-2">{{ mensajes_no_leidos }} nuevos</span>
+                                    {% endif %}
+                                </li>
+
+                                {% if mensajes_recientes %}
+                                    {% for msg in mensajes_recientes %}
+                                        <li>
+                                            <div class="notif-dropdown-item {% if not msg.leido %}no-leida{% endif %}">
+                                                <div class="notif-dropdown-icon">
+                                                    {% if msg.remitente.perfil.foto_perfil %}
+                                                        <img src="{{ msg.remitente.perfil.foto_perfil.url }}" 
+                                                             style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+                                                    {% else %}
+                                                        <div style="width:40px;height:40px;border-radius:50%;background:var(--azul);display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:0.9rem;">
+                                                            {{ msg.remitente.username|first|upper }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="notif-dropdown-content">
+                                                    <div class="notif-dropdown-mensaje">
+                                                        <strong>{{ msg.remitente.username }}</strong>
+                                                    </div>
+                                                    <div class="notif-dropdown-mensaje">
+                                                        {{ msg.mensaje|truncatechars:50 }}
+                                                    </div>
+                                                    <div class="notif-dropdown-fecha">
+                                                        <i class="far fa-clock"></i> {{ msg.fecha|timesince }} atrás
+                                                    </div>
+                                                    <div class="notif-dropdown-actions">
+                                                        <a href="{% url 'conversacion' msg.remitente.username %}" class="notif-dropdown-btn responder">
+                                                            <i class="fas fa-reply"></i> Responder
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                {% else %}
+                                    <li>
+                                        <div class="notif-vacio">
+                                            <div style="font-size: 2.5rem;">📬</div>
+                                            <p style="margin: 10px 0 0;">No tienes mensajes</p>
+                                        </div>
+                                    </li>
+                                {% endif %}
+
+                                <li class="notif-dropdown-footer">
+                                    <a href="{% url 'bandeja_entrada' %}">
+                                        Ver todos los mensajes <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                    {% else %}
+                        <!-- INVITADO -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'que_es_programar' %}">
+                                <i class="fas fa-question-circle"></i> ¿Qué es programar?
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'acerca_de' %}">
+                                <i class="fas fa-info-circle"></i> Acerca de
+                            </a>
+                        </li>
+                        <li class="nav-item ms-2">
+                            <a class="nav-link btn btn-primary text-white px-4" href="{% url 'login' %}">
+                                <i class="fas fa-sign-in-alt"></i> Entrar
+                            </a>
+                        </li>
+                        <li class="nav-item ms-2">
+                            <a class="nav-link btn btn-success text-white px-4" href="{% url 'registro' %}">
+                                <i class="fas fa-user-plus"></i> Registrarse
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- RACHA -->
+    {% if user.is_authenticated and user_racha > 0 %}
+        <div class="container mt-3">
+            <div class="racha">
+                🔥 ¡Llevas {{ user_racha }} días seguidos programando!
+                {% if user_nivel %} | Nivel: {{ user_nivel }} ({{ user_xp }} XP){% endif %}
+                {% if user_tipo %} | 🧠 {{ user_tipo }}{% endif %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- MENSAJES FLASH -->
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'success' %}success{% elif message.tags == 'info' %}info{% else %}warning{% endif %} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="container my-4 flex-grow-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container text-center">
+            <p class="mb-2" style="color: #F1F5F9;">
+                🚀 <strong>CodeCrack</strong> - Motivando a la próxima generación de programadores
+                <br>
+                <small style="color: #94A3B8;">10mo - 11ro - 12mo grado | Creado con 💻 y ☕</small>
+            </p>
+            <div class="mt-3">
+                <a href="{% url 'acerca_de' %}" class="me-3" style="color: #94A3B8; text-decoration: none;">
+                    <i class="fas fa-info-circle"></i> Acerca de
+                </a>
+                <a href="{% url 'que_es_programar' %}" class="me-3" style="color: #94A3B8; text-decoration: none;">
+                    <i class="fas fa-question-circle"></i> ¿Qué es programar?
+                </a>
+                <a href="{% url 'contacto' %}" style="color: #94A3B8; text-decoration: none;">
+                    <i class="fas fa-envelope"></i> Contacto
+                </a>
+            </div>
+            <div class="mt-3">
+                <small style="color: #64748B;">
+                    <i class="fas fa-copyright"></i> 2026 CodeCrack - Todos los derechos reservados
+                </small>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

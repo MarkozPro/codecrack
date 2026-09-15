@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Desafíos - CodeCrack{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-4"><i class="fas fa-tasks"></i> Desafíos</h1>
+
+<div class="row">
+    {% for desafio in desafios %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 {% if desafio.completado %}border-success{% endif %}">
+                <div class="card-body text-center">
+                    <div style="font-size: 3rem;">{{ desafio.icono }}</div>
+                    <h5 class="card-title mt-2">{{ desafio.titulo }}</h5>
+                    <span class="badge bg-primary">{{ desafio.get_categoria_display }}</span>
+                    <p class="card-text mt-2">{{ desafio.descripcion }}</p>
+                    <p><strong>+{{ desafio.xp_recompensa }} XP</strong></p>
+                    
+                    {% if desafio.completado %}
+                        <span class="badge bg-success">✅ Completado</span>
+                    {% else %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="desafio_id" value="{{ desafio.id }}">
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="fas fa-check"></i> Completar Desafío
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p class="text-center">No hay desafíos activos. ¡Vuelve pronto!</p>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Foro - CodeCrack{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-question-circle"></i> Foro de Preguntas</h2>
+            <a href="{% url 'nueva_pregunta' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nueva Pregunta
+            </a>
+        </div>
+
+        {% for pregunta in preguntas %}
+            <div class="card p-3 mb-3">
+                <a href="{% url 'pregunta_detalle' pregunta.id %}" class="text-decoration-none">
+                    <h5 style="color: var(--texto);">
+                        {% if pregunta.resuelta %}✅{% else %}❓{% endif %}
+                        {{ pregunta.titulo }}
+                    </h5>
+                </a>
+                <p class="text-muted mb-2">{{ pregunta.contenido|truncatechars:150 }}</p>
+                <div class="d-flex justify-content-between">
+                    <!-- ✅ AUTOR CLICABLE -->
+                    <small class="text-muted">
+                        👤 Por 
+                        <a href="{% url 'perfil_publico' pregunta.autor.username %}" class="text-decoration-none">
+                            <strong>{{ pregunta.autor.username }}</strong>
+                        </a>
+                        • {{ pregunta.fecha|timesince }} atrás
+                    </small>
+                    <small class="text-muted">
+                        💬 {{ pregunta.total_respuestas }} respuestas • 👁️ {{ pregunta.vistas }} vistas
+                    </small>
+                </div>
+            </div>
+        {% empty %}
+            <div class="card p-5 text-center">
+                <div style="font-size: 4rem;">❓</div>
+                <h4>No hay preguntas aún</h4>
+                <p class="text-muted">¡Sé el primero en preguntar!</p>
+                <a href="{% url 'nueva_pregunta' %}" class="btn btn-primary">Hacer una pregunta</a>
+            </div>
+        {% endfor %}
+
+        {% if preguntas.has_other_pages %}
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {% if preguntas.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ preguntas.previous_page_number }}">«</a></li>
+                    {% endif %}
+                    <li class="page-item active"><span class="page-link">{{ preguntas.number }}</span></li>
+                    {% if preguntas.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ preguntas.next_page_number }}">»</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

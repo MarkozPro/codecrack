@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block title %}Mensajes - CodeCrack{% endblock %}
+
+{% block extra_css %}
+<style>
+    .bandeja-titulo {
+        color: #F1F5F9 !important;
+        font-weight: 700;
+    }
+
+    /* Tarjeta de conversación */
+    .conv-card {
+        background: #FFFFFF !important;
+        border-radius: 12px;
+        padding: 15px 20px;
+        margin-bottom: 10px;
+        border-left: 5px solid #2563EB;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s;
+        text-decoration: none;
+        display: block;
+    }
+
+    .conv-card:hover {
+        background: #F0F9FF !important;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
+    }
+
+    .conv-card.no-leido {
+        background: #EFF6FF !important;
+        border-left: 5px solid #EF4444;
+    }
+
+    /* Nombre del usuario - AZUL OSCURO */
+    .conv-nombre {
+        color: #1E3A8A !important;
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 5px;
+    }
+
+    /* Contenido del mensaje - NEGRO */
+    .conv-mensaje {
+        color: #000000 !important;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 5px;
+        white-space: normal;
+        word-wrap: break-word;
+    }
+
+    /* Fecha - GRIS OSCURO */
+    .conv-fecha {
+        color: #475569 !important;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    /* Badge de no leídos */
+    .badge-no-leidos {
+        background: #EF4444;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+
+    /* Avatar */
+    .conv-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        flex-shrink: 0;
+    }
+    .conv-avatar-inicial {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #2563EB;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: white;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="bandeja-titulo">
+                <i class="fas fa-envelope"></i> Mensajes Privados
+            </h2>
+            <a href="{% url 'foro' %}" class="btn btn-outline-primary btn-sm">
+                <i class="fas fa-question-circle"></i> Ir al Foro
+            </a>
+        </div>
+
+        {% for conv in conversaciones %}
+            <a href="{% url 'conversacion' conv.usuario.username %}" class="conv-card {% if conv.no_leidos > 0 %}no-leido{% endif %}">
+                <div class="d-flex align-items-center">
+                    <!-- AVATAR -->
+                    <div class="me-3">
+                        {% if conv.usuario.perfil.foto_perfil %}
+                            <img src="{{ conv.usuario.perfil.foto_perfil.url }}" class="conv-avatar">
+                        {% else %}
+                            <div class="conv-avatar-inicial">
+                                {{ conv.usuario.username|first|upper }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- INFORMACIÓN -->
+                    <div class="flex-grow-1" style="min-width: 0;">
+                        <div class="conv-nombre">
+                            {{ conv.usuario.username }}
+                        </div>
+                        <div class="conv-mensaje">
+                            {{ conv.ultimo_mensaje.mensaje|truncatechars:60 }}
+                        </div>
+                        <div class="conv-fecha">
+                            <i class="far fa-clock"></i> {{ conv.ultimo_mensaje.fecha|timesince }} atrás
+                        </div>
+                    </div>
+
+                    <!-- BADGE DE NO LEÍDOS -->
+                    <div class="ms-3">
+                        {% if conv.no_leidos > 0 %}
+                            <span class="badge-no-leidos">{{ conv.no_leidos }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+        {% empty %}
+            <div class="card p-5 text-center" style="background: #1E293B;">
+                <div style="font-size: 4rem;">📬</div>
+                <h4 style="color: #F1F5F9;">No tienes mensajes</h4>
+                <p style="color: #CBD5E1;">Cuando alguien te escriba, aparecerá aquí.</p>
+            </div>
+        {% endfor %}
+
+    </div>
+</div>
+{% endblock %}

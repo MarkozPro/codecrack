@@ -1,0 +1,315 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard Admin - CodeCrack{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <div>
+            <h1 class="mb-0">📊 Dashboard Admin</h1>
+            <p class="text-muted">Bienvenido, {{ user.username }}</p>
+        </div>
+        <div>
+            <a href="/admin/" class="btn btn-primary">
+                <i class="fas fa-cog"></i> Ir al Admin
+            </a>
+            <a href="{% url 'home' %}" class="btn btn-outline-primary">
+                <i class="fas fa-home"></i> Ver Sitio
+            </a>
+        </div>
+    </div>
+
+    <!-- ALERTA DE PENDIENTES -->
+    {% if total_pendientes > 0 %}
+        <div class="alert alert-warning mb-4" style="border-radius: 16px;">
+            <h5 class="mb-2">🚨 Tienes {{ total_pendientes }} cosa{{ total_pendientes|pluralize }} pendiente{{ total_pendientes|pluralize }} de aprobar</h5>
+            <p class="mb-0">Revisa y aprueba lo antes posible para que los usuarios vean su contenido.</p>
+        </div>
+    {% endif %}
+
+    <!-- PENDIENTES -->
+    {% if proyectos_pendientes > 0 or comentarios_pendientes > 0 %}
+        <h4 class="mb-3">🚨 Pendientes de Aprobar</h4>
+        <div class="row mb-4">
+            {% if proyectos_pendientes > 0 %}
+                <div class="col-md-6 mb-3">
+                    <a href="/admin/core/proyectoestudiante/?aprobado__exact=0" class="text-decoration-none">
+                        <div class="card p-4" style="border-left: 5px solid #EF4444;">
+                            <div class="d-flex align-items-center">
+                                <div style="font-size: 3rem;" class="me-3">📦</div>
+                                <div class="flex-grow-1">
+                                    <h2 class="mb-0">{{ proyectos_pendientes }}</h2>
+                                    <p class="mb-0">Proyectos por aprobar</p>
+                                </div>
+                                <i class="fas fa-arrow-right" style="font-size: 1.5rem;"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endif %}
+            {% if comentarios_pendientes > 0 %}
+                <div class="col-md-6 mb-3">
+                    <a href="/admin/core/comentario/?aprobado__exact=0" class="text-decoration-none">
+                        <div class="card p-4" style="border-left: 5px solid #F59E0B;">
+                            <div class="d-flex align-items-center">
+                                <div style="font-size: 3rem;" class="me-3">💬</div>
+                                <div class="flex-grow-1">
+                                    <h2 class="mb-0">{{ comentarios_pendientes }}</h2>
+                                    <p class="mb-0">Comentarios por aprobar</p>
+                                </div>
+                                <i class="fas fa-arrow-right" style="font-size: 1.5rem;"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- LISTA DE PROYECTOS PENDIENTES -->
+        {% if proyectos_pendientes_lista %}
+            <div class="card p-4 mb-4">
+                <h5 class="mb-3">📦 Últimos Proyectos Pendientes</h5>
+                {% for p in proyectos_pendientes_lista %}
+                    <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                        <div>
+                            <strong>{{ p.titulo }}</strong><br>
+                            <small class="text-muted">👤 {{ p.estudiante.username }} • {{ p.fecha_subida|date:"d/m/Y" }}</small>
+                        </div>
+                        <a href="/admin/core/proyectoestudiante/{{ p.id }}/change/" class="btn btn-sm btn-primary">
+                            <i class="fas fa-check"></i> Revisar
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- LISTA DE COMENTARIOS PENDIENTES -->
+        {% if comentarios_pendientes_lista %}
+            <div class="card p-4 mb-4">
+                <h5 class="mb-3">💬 Últimos Comentarios Pendientes</h5>
+                {% for c in comentarios_pendientes_lista %}
+                    <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                        <div>
+                            <strong>{{ c.texto|truncatechars:60 }}</strong><br>
+                            <small class="text-muted">👤 {{ c.usuario.username }} • {{ c.fecha_creacion|date:"d/m/Y" }}</small>
+                        </div>
+                        <a href="/admin/core/comentario/{{ c.id }}/change/" class="btn btn-sm btn-warning">
+                            <i class="fas fa-check"></i> Revisar
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-success mb-4" style="border-radius: 16px;">
+            <h5 class="mb-0">✅ ¡Todo al día!</h5>
+            <p class="mb-0">No hay nada pendiente de aprobar.</p>
+        </div>
+    {% endif %}
+
+    <!-- ESTADÍSTICAS -->
+    <h4 class="mb-3">📈 Estadísticas</h4>
+    <div class="row mb-4">
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card p-3 text-center">
+                <div style="font-size: 2rem;">📚</div>
+                <h2 class="mb-0">{{ total_proyectos }}</h2>
+                <small class="text-muted">Proyectos</small>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card p-3 text-center">
+                <div style="font-size: 2rem;">👥</div>
+                <h2 class="mb-0">{{ total_usuarios }}</h2>
+                <small class="text-muted">Usuarios</small>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card p-3 text-center">
+                <div style="font-size: 2rem;">💬</div>
+                <h2 class="mb-0">{{ total_comentarios }}</h2>
+                <small class="text-muted">Comentarios</small>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card p-3 text-center">
+                <div style="font-size: 2rem;">⭐</div>
+                <h2 class="mb-0">{{ total_historias }}</h2>
+                <small class="text-muted">Historias</small>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card p-3 text-center">
+                <div style="font-size: 2rem;">📅</div>
+                <h2 class="mb-0">{{ total_eventos }}</h2>
+                <small class="text-muted">Eventos</small>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card p-3 text-center">
+                <div style="font-size: 2rem;">📖</div>
+                <h2 class="mb-0">{{ total_recursos }}</h2>
+                <small class="text-muted">Recursos</small>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card p-3 text-center">
+                <div style="font-size: 2rem;">🎓</div>
+                <h2 class="mb-0">{{ total_proyectos_estudiantes }}</h2>
+                <small class="text-muted">Proyectos Est.</small>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card p-3 text-center">
+                <div style="font-size: 2rem;">❓</div>
+                <h2 class="mb-0">{{ total_preguntas }}</h2>
+                <small class="text-muted">Preguntas</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACCIONES RÁPIDAS -->
+    <h4 class="mb-3">⚡ Acciones Rápidas</h4>
+    <div class="row mb-4">
+        <div class="col-md-3 col-6 mb-3">
+            <a href="/admin/core/proyecto/add/" class="btn btn-primary w-100">
+                <i class="fas fa-plus"></i> Nuevo Proyecto
+            </a>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <a href="/admin/core/historiaexito/add/" class="btn btn-success w-100">
+                <i class="fas fa-plus"></i> Nueva Historia
+            </a>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <a href="/admin/core/recurso/add/" class="btn btn-warning w-100">
+                <i class="fas fa-plus"></i> Nuevo Recurso
+            </a>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <a href="/admin/core/evento/add/" class="btn btn-danger w-100">
+                <i class="fas fa-plus"></i> Nuevo Evento
+            </a>
+        </div>
+    </div>
+
+    <!-- ACCESO DIRECTO -->
+    <h4 class="mb-3">🔗 Acceso Directo al Admin</h4>
+    <div class="row mb-4">
+        <div class="col-md-3 col-6 mb-2">
+            <a href="/admin/core/proyecto/" class="btn btn-outline-primary w-100">
+                <i class="fas fa-code"></i> Proyectos
+            </a>
+        </div>
+        <div class="col-md-3 col-6 mb-2">
+            <a href="/admin/core/proyectoestudiante/" class="btn btn-outline-success w-100">
+                <i class="fas fa-check-circle"></i> Aprobar Proyectos
+            </a>
+        </div>
+        <div class="col-md-3 col-6 mb-2">
+            <a href="/admin/core/comentario/" class="btn btn-outline-warning w-100">
+                <i class="fas fa-comment"></i> Aprobar Comentarios
+            </a>
+        </div>
+        <div class="col-md-3 col-6 mb-2">
+            <a href="/admin/core/perfil/" class="btn btn-outline-info w-100">
+                <i class="fas fa-id-card"></i> Perfiles
+            </a>
+        </div>
+        <div class="col-md-3 col-6 mb-2">
+            <a href="/admin/core/historiaexito/" class="btn btn-outline-primary w-100">
+                <i class="fas fa-star"></i> Historias
+            </a>
+        </div>
+        <div class="col-md-3 col-6 mb-2">
+            <a href="/admin/core/recurso/" class="btn btn-outline-success w-100">
+                <i class="fas fa-book"></i> Recursos
+            </a>
+        </div>
+        <div class="col-md-3 col-6 mb-2">
+            <a href="/admin/core/evento/" class="btn btn-outline-warning w-100">
+                <i class="fas fa-calendar"></i> Eventos
+            </a>
+        </div>
+        <div class="col-md-3 col-6 mb-2">
+            <a href="/admin/core/mensajechat/" class="btn btn-outline-info w-100">
+                <i class="fas fa-comments"></i> Chat
+            </a>
+        </div>
+        <div class="col-md-3 col-6 mb-2">
+            <a href="/admin/core/pregunta/" class="btn btn-outline-primary w-100">
+                <i class="fas fa-question-circle"></i> Foro
+            </a>
+        </div>
+        <div class="col-md-3 col-6 mb-2">
+            <a href="/admin/core/desafio/" class="btn btn-outline-success w-100">
+                <i class="fas fa-tasks"></i> Desafíos
+            </a>
+        </div>
+        <div class="col-md-3 col-6 mb-2">
+            <a href="/admin/core/insignia/" class="btn btn-outline-warning w-100">
+                <i class="fas fa-award"></i> Insignias
+            </a>
+        </div>
+        <div class="col-md-3 col-6 mb-2">
+            <a href="/admin/auth/user/" class="btn btn-outline-danger w-100">
+                <i class="fas fa-users"></i> Usuarios
+            </a>
+        </div>
+    </div>
+
+    <!-- ACTIVIDAD RECIENTE -->
+    <h4 class="mb-3">🕐 Actividad Reciente</h4>
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <div class="card p-3">
+                <h5>👥 Últimos Usuarios</h5>
+                {% for u in ultimos_usuarios %}
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-2" style="width:32px;height:32px;background:var(--azul);font-weight:700;font-size:0.75rem;">
+                            {{ u.username|first|upper }}
+                        </div>
+                        <div>
+                            <strong>{{ u.username }}</strong><br>
+                            <small class="text-muted">{{ u.date_joined|date:"d/m/Y" }}</small>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No hay usuarios.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card p-3">
+                <h5>📚 Últimos Proyectos</h5>
+                {% for p in ultimos_proyectos %}
+                    <div class="mb-2">
+                        <strong>{{ p.titulo|truncatechars:30 }}</strong><br>
+                        <small class="text-muted">{{ p.fecha_publicacion|date:"d/m/Y" }}</small>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No hay proyectos.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card p-3">
+                <h5>💬 Últimos Comentarios</h5>
+                {% for c in ultimos_comentarios %}
+                    <div class="mb-2">
+                        <strong>{{ c.texto|truncatechars:40 }}</strong><br>
+                        <small class="text-muted">{{ c.usuario.username }} • {{ c.fecha_creacion|date:"d/m/Y" }}</small>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No hay comentarios.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

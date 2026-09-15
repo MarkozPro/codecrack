@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Mi Progreso - CodeCrack{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-4"><i class="fas fa-chart-line"></i> Mi Progreso</h1>
+
+<div class="row">
+    <!-- Resumen -->
+    <div class="col-md-4 mb-4">
+        <div class="card p-4 text-center">
+            <h3>🎯 Nivel</h3>
+            <p class="display-4">{{ perfil.get_nivel_nombre }}</p>
+            <p>{{ perfil.xp_total }} XP</p>
+            <div class="progress">
+                <div class="progress-bar" style="width: {{ porcentaje }}%; background: linear-gradient(90deg, var(--azul), var(--morado));">
+                    {{ porcentaje }}%
+                </div>
+            </div>
+            <p class="mt-2">Progreso en proyectos: {{ proyectos_vistos }}/{{ total_proyectos }}</p>
+        </div>
+    </div>
+
+    <!-- Racha -->
+    <div class="col-md-4 mb-4">
+        <div class="card p-4 text-center">
+            <h3>🔥 Racha</h3>
+            <p class="display-4">{{ perfil.racha_dias }}</p>
+            <p>días seguidos</p>
+            <p class="text-muted">Última visita: {{ perfil.ultima_visita|date:"d/m/Y" }}</p>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="col-md-4 mb-4">
+        <div class="card p-4 text-center">
+            <h3>📊 Estadísticas</h3>
+            <p><i class="fas fa-check-circle text-success"></i> Proyectos completados: {{ proyectos_completados }}</p>
+            <p><i class="fas fa-comment text-info"></i> Comentarios: {{ comentarios }}</p>
+            <p><i class="fas fa-heart text-danger"></i> Favoritos: {{ favoritos.count }}</p>
+        </div>
+    </div>
+</div>
+
+<!-- Insignias -->
+<h2 class="text-center mt-4">🏅 Mis Insignias</h2>
+<div class="row">
+    {% for insignia in insignias %}
+        <div class="col-md-2 col-4 text-center mb-3">
+            <div class="card p-3" style="background: rgba(37, 99, 235, 0.1);">
+                <span style="font-size: 3rem;">{{ insignia.insignia.icono }}</span>
+                <p class="small mt-2">{{ insignia.insignia.nombre }}</p>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <p class="text-center">Aún no tienes insignias. ¡Sigue explorando y completando proyectos!</p>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Proyectos favoritos -->
+<h2 class="text-center mt-4">⭐ Mis Favoritos</h2>
+<div class="row">
+    {% for proyecto in favoritos %}
+        <div class="col-md-3 mb-3">
+            <div class="card p-3">
+                <h6>{{ proyecto.titulo }}</h6>
+                <a href="{% url 'proyecto_detalle' proyecto.id %}" class="btn btn-sm btn-primary">Ver</a>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <p class="text-center">No tienes proyectos favoritos aún. Agrega algunos desde la página de proyectos.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

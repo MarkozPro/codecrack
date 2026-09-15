@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Iniciar Sesión - CodeCrack{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card p-4">
+            <h2 class="text-center mb-4"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</h2>
+
+            <!-- ADVERTENCIA DE MAYÚSCULAS -->
+            <div id="caps-warning" class="alert alert-warning text-center" style="display: none; border-radius: 12px;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>¡Caps Lock activado!</strong> Tu contraseña se está escribiendo en mayúsculas.
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="id_username" class="form-label">Usuario</label>
+                    <input type="text" name="username" id="id_username" class="form-control" placeholder="Ingresa tu usuario" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_password" class="form-label">Contraseña</label>
+                    <input type="password" name="password" id="id_password" class="form-control" placeholder="Ingresa tu contraseña" required>
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle"></i>
+                        La contraseña es sensible a mayúsculas/minúsculas
+                    </small>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mt-3">
+                    <i class="fas fa-arrow-right"></i> Entrar
+                </button>
+            </form>
+
+            <div class="text-center mt-3">
+                <a href="{% url 'recuperar_password' %}" class="text-primary">
+                    <i class="fas fa-unlock-alt"></i> ¿Olvidaste tu contraseña?
+                </a>
+            </div>
+
+            <hr>
+
+            <p class="text-center">
+                ¿No tienes cuenta? <a href="{% url 'registro' %}" class="text-primary">Regístrate</a>
+            </p>
+
+            <p class="text-center mt-2">
+                <a href="{% url 'home' %}" class="text-muted">
+                    <i class="fas fa-home"></i> Volver al inicio
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordInput = document.getElementById('id_password');
+    const capsWarning = document.getElementById('caps-warning');
+
+    if (passwordInput && capsWarning) {
+        passwordInput.addEventListener('keyup', function(e) {
+            const capsOn = e.getModifierState && e.getModifierState('CapsLock');
+            capsWarning.style.display = capsOn ? 'block' : 'none';
+        });
+        passwordInput.addEventListener('blur', function() {
+            const capsOn = this.getModifierState && this.getModifierState('CapsLock');
+            capsWarning.style.display = capsOn ? 'block' : 'none';
+        });
+    }
+});
+</script>
+{% endblock %}

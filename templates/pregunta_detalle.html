@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ pregunta.titulo }} - CodeCrack{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+
+        <a href="{% url 'foro' %}" class="btn btn-outline-secondary btn-sm mb-3">
+            <i class="fas fa-arrow-left"></i> Volver al foro
+        </a>
+
+        <!-- PREGUNTA -->
+        <div class="card p-4 mb-4">
+            <h2>
+                {% if pregunta.resuelta %}✅{% else %}❓{% endif %}
+                {{ pregunta.titulo }}
+            </h2>
+            <p class="text-muted">
+                👤 Por 
+                <a href="{% url 'perfil_publico' pregunta.autor.username %}" class="text-decoration-none">
+                    <strong>{{ pregunta.autor.username }}</strong>
+                </a>
+                • {{ pregunta.fecha|timesince }} atrás • 👁️ {{ pregunta.vistas }} vistas
+            </p>
+            <hr>
+            <p>{{ pregunta.contenido|linebreaks }}</p>
+        </div>
+
+        <!-- RESPUESTAS -->
+        <h4>💬 {{ respuestas.count }} Respuestas</h4>
+
+        {% for respuesta in respuestas %}
+            <div class="card p-3 mb-3 {% if respuesta.es_correcta %}border-success{% endif %}">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <!-- ✅ AUTOR CLICABLE -->
+                        <a href="{% url 'perfil_publico' respuesta.autor.username %}" class="text-decoration-none">
+                            <strong>{{ respuesta.autor.username }}</strong>
+                        </a>
+                        <small class="text-muted">• {{ respuesta.fecha|timesince }} atrás</small>
+                        {% if respuesta.es_correcta %}
+                            <span class="badge bg-success ms-2">✅ Respuesta correcta</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <p class="mt-2">{{ respuesta.contenido|linebreaks }}</p>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'votar_respuesta' respuesta.id %}" class="btn btn-sm btn-outline-success">
+                        👍 {{ respuesta.votos }}
+                    </a>
+                    {% if user == pregunta.autor and not respuesta.es_correcta %}
+                        <a href="{% url 'marcar_correcta' respuesta.id %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-check"></i> Marcar como correcta
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-muted">No hay respuestas aún. ¡Sé el primero en responder!</p>
+        {% endfor %}
+
+        <!-- FORMULARIO DE RESPUESTA -->
+        <div class="card p-4 mt-4">
+            <h4>✍️ Tu respuesta</h4>
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i> Publicar respuesta
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

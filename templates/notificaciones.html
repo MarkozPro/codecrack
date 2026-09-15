@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}Notificaciones - CodeCrack{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Fondo general de la página */
+    .notif-container {
+        background: #0F172A;
+        padding: 20px;
+        border-radius: 16px;
+    }
+
+    /* Tarjeta de notificación */
+    .notif-card {
+        background: #FFFFFF !important;
+        border-radius: 12px;
+        padding: 18px;
+        margin-bottom: 12px;
+        border-left: 5px solid #2563EB;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .notif-card.no-leida {
+        background: #F0F9FF !important;
+        border-left: 5px solid #2563EB;
+    }
+
+    /* Texto del mensaje - NEGRO sobre fondo BLANCO */
+    .notif-mensaje {
+        color: #000000 !important;
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    /* Fecha */
+    .notif-fecha {
+        color: #475569 !important;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    /* Nombre de usuario */
+    .notif-nombre {
+        color: #1D4ED8 !important;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .notif-nombre:hover {
+        color: #7C3AED !important;
+        text-decoration: underline;
+    }
+
+    /* Icono */
+    .notif-icono {
+        font-size: 2rem;
+        margin-right: 15px;
+    }
+
+    /* Badge nueva */
+    .badge-nueva {
+        background: #EF4444;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2 class="mb-4" style="color: #F1F5F9;">
+            <i class="fas fa-bell"></i> Mis Notificaciones
+        </h2>
+
+        <div class="notif-container">
+            {% for notif in notificaciones %}
+                <div class="notif-card {% if not notif.leida %}no-leida{% endif %}">
+                    <div class="d-flex align-items-start">
+                        <!-- ICONO -->
+                        <div class="notif-icono">
+                            {% if notif.tipo == 'comentario' %}💬
+                            {% elif notif.tipo == 'aprobacion' %}✅
+                            {% elif notif.tipo == 'insignia' %}🏅
+                            {% elif notif.tipo == 'seguidor' %}👥
+                            {% elif notif.tipo == 'desafio' %}🎯
+                            {% elif notif.tipo == 'sancion' %}⚠️
+                            {% elif notif.tipo == 'mensaje' %}✉️
+                            {% elif notif.tipo == 'like' %}❤️
+                            {% elif notif.tipo == 'descarga' %}📥
+                            {% else %}🔔
+                            {% endif %}
+                        </div>
+
+                        <!-- CONTENIDO -->
+                        <div class="flex-grow-1">
+                            <p class="notif-mensaje mb-1">{{ notif.mensaje }}</p>
+                            <small class="notif-fecha">
+                                <i class="far fa-clock"></i> {{ notif.fecha|timesince }} atrás
+                            </small>
+
+                            <!-- BOTONES -->
+                            <div class="mt-3">
+                                {% if notif.tipo == 'mensaje' and notif.enlace %}
+                                    <a href="{{ notif.enlace }}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-reply"></i> Responder
+                                    </a>
+                                {% elif notif.enlace %}
+                                    <a href="{{ notif.enlace }}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-eye"></i> Ver
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- BADGE NUEVA -->
+                        {% if not notif.leida %}
+                            <span class="badge-nueva">Nueva</span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="card p-5 text-center" style="background: #1E293B;">
+                    <div style="font-size: 4rem;">🔔</div>
+                    <h4 style="color: #F1F5F9;">No tienes notificaciones</h4>
+                    <p style="color: #CBD5E1;">Cuando alguien interactúe contigo, aparecerá aquí.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

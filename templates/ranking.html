@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Ranking - CodeCrack{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-4"><i class="fas fa-trophy"></i> Tabla de Clasificación</h1>
+
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <div class="card p-4">
+            <div class="table-responsive">
+                <table class="table table-dark table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Usuario</th>
+                            <th>🏆 XP</th>
+                            <th>📦 Proyectos</th>
+                            <th>💬 Comentarios</th>
+                            <th>🔥 Racha</th>
+                            <th>🎯 Desafíos</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for usuario in usuarios %}
+                            <tr>
+                                <td>
+                                    {% if forloop.counter == 1 %}🥇
+                                    {% elif forloop.counter == 2 %}🥈
+                                    {% elif forloop.counter == 3 %}🥉
+                                    {% else %}{{ forloop.counter }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <!-- ✅ NOMBRE CLICABLE -->
+                                    <a href="{% url 'perfil_publico' usuario.username %}" class="text-decoration-none">
+                                        <strong>{{ usuario.username }}</strong>
+                                    </a>
+                                    {% if usuario == user %}
+                                        <span class="badge bg-primary">Tú</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ usuario.total_xp|default:0 }}</td>
+                                <td>{{ usuario.total_proyectos|default:0 }}</td>
+                                <td>{{ usuario.total_comentarios|default:0 }}</td>
+                                <td>🔥 {{ usuario.racha|default:0 }}</td>
+                                <td>{{ usuario.total_desafios|default:0 }}</td>
+                                <td>
+                                    {% if usuario != user %}
+                                        <a href="{% url 'perfil_publico' usuario.username %}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-eye"></i> Ver
+                                        </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center">No hay usuarios registrados aún.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

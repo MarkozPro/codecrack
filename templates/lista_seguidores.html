@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if tipo == 'seguidores' %}
+        Seguidores de {{ perfil_usuario.username }}
+    {% else %}
+        {{ perfil_usuario.username }} sigue a
+    {% endif %}
+    - CodeCrack
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                {% if tipo == 'seguidores' %}
+                    👥 Seguidores de <a href="{% url 'perfil_publico' perfil_usuario.username %}" class="text-decoration-none">{{ perfil_usuario.username }}</a>
+                {% else %}
+                    👤 <a href="{% url 'perfil_publico' perfil_usuario.username %}" class="text-decoration-none">{{ perfil_usuario.username }}</a> sigue a
+                {% endif %}
+            </h2>
+            <a href="{% url 'perfil_publico' perfil_usuario.username %}" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Volver al perfil
+            </a>
+        </div>
+
+        <div class="mb-4">
+            <a href="{% url 'lista_seguidores' perfil_usuario.username %}" 
+               class="btn {% if tipo == 'seguidores' %}btn-primary{% else %}btn-outline-primary{% endif %} me-2">
+                👥 Seguidores ({{ perfil.total_seguidores }})
+            </a>
+            <a href="{% url 'lista_siguiendo' perfil_usuario.username %}" 
+               class="btn {% if tipo == 'siguiendo' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                👤 Siguiendo ({{ perfil.total_siguiendo }})
+            </a>
+        </div>
+
+        {% if tipo == 'seguidores' %}
+            {% for s in seguidores %}
+                <div class="card p-3 mb-2">
+                    <div class="d-flex align-items-center">
+                        <a href="{% url 'perfil_publico' s.seguidor.username %}" class="me-3">
+                            {% if s.seguidor.perfil.foto_perfil %}
+                                <img src="{{ s.seguidor.perfil.foto_perfil.url }}" 
+                                     style="width:50px;height:50px;border-radius:50%;object-fit:cover;">
+                            {% else %}
+                                <div style="width:50px;height:50px;border-radius:50%;background:var(--azul);display:flex;align-items:center;justify-content:center;font-weight:700;color:white;">
+                                    {{ s.seguidor.username|first|upper }}
+                                </div>
+                            {% endif %}
+                        </a>
+                        
+                        <div class="flex-grow-1">
+                            <a href="{% url 'perfil_publico' s.seguidor.username %}" class="text-decoration-none">
+                                <strong style="color: var(--texto);">{{ s.seguidor.username }}</strong>
+                            </a>
+                            {% if s.seguidor.perfil %}
+                                <br><small class="text-muted">
+                                    {{ s.seguidor.perfil.grado }} • 
+                                    🎯 {{ s.seguidor.perfil.get_nivel_nombre }} • 
+                                    ⚡ {{ s.seguidor.perfil.xp_total }} XP
+                                </small>
+                            {% endif %}
+                            <br><small class="text-muted">📅 Te sigue desde {{ s.fecha|date:"d/m/Y" }}</small>
+                        </div>
+                        
+                        <div>
+                            <a href="{% url 'perfil_publico' s.seguidor.username %}" class="btn btn-sm btn-primary">
+                                <i class="fas fa-eye"></i> Ver
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="card p-5 text-center">
+                    <div style="font-size: 4rem;">👥</div>
+                    <h4>Aún no tiene seguidores</h4>
+                    <p class="text-muted">Cuando alguien lo siga, aparecerá aquí.</p>
+                </div>
+            {% endfor %}
+
+        {% else %}
+            {% for s in siguiendo %}
+                <div class="card p-3 mb-2">
+                    <div class="d-flex align-items-center">
+                        <a href="{% url 'perfil_publico' s.seguido.username %}" class="me-3">
+                            {% if s.seguido.perfil.foto_perfil %}
+                                <img src="{{ s.seguido.perfil.foto_perfil.url }}" 
+                                     style="width:50px;height:50px;border-radius:50%;object-fit:cover;">
+                            {% else %}
+                                <div style="width:50px;height:50px;border-radius:50%;background:var(--morado);display:flex;align-items:center;justify-content:center;font-weight:700;color:white;">
+                                    {{ s.seguido.username|first|upper }}
+                                </div>
+                            {% endif %}
+                        </a>
+                        
+                        <div class="flex-grow-1">
+                            <a href="{% url 'perfil_publico' s.seguido.username %}" class="text-decoration-none">
+                                <strong style="color: var(--texto);">{{ s.seguido.username }}</strong>
+                            </a>
+                            {% if s.seguido.perfil %}
+                                <br><small class="text-muted">
+                                    {{ s.seguido.perfil.grado }} • 
+                                    🎯 {{ s.seguido.perfil.get_nivel_nombre }} • 
+                                    ⚡ {{ s.seguido.perfil.xp_total }} XP
+                                </small>
+                            {% endif %}
+                            <br><small class="text-muted">📅 Lo sigue desde {{ s.fecha|date:"d/m/Y" }}</small>
+                        </div>
+                        
+                        <div>
+                            <a href="{% url 'perfil_publico' s.seguido.username %}" class="btn btn-sm btn-primary">
+                                <i class="fas fa-eye"></i> Ver
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="card p-5 text-center">
+                    <div style="font-size: 4rem;">👤</div>
+                    <h4>No sigue a nadie aún</h4>
+                    <p class="text-muted">Cuando siga a alguien, aparecerá aquí.</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

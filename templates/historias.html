@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Historias que Inspiran - CodeCrack{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-4"><i class="fas fa-star"></i> Historias que Inspiran</h1>
+
+<div class="row">
+    {% for historia in historias %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if historia.foto %}
+                    <img src="{{ historia.foto.url }}" class="card-img-top" style="height: 250px; object-fit: cover;">
+                {% else %}
+                    <div class="card-img-top d-flex align-items-center justify-content-center" style="height: 250px; background: rgba(37, 99, 235, 0.1);">
+                        <span style="font-size: 4rem;">🌟</span>
+                    </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ historia.nombre_persona }}</h5>
+                    <p><small class="text-muted">Empezó a los {{ historia.edad_cuando_empezo }} años</small></p>
+                    <p class="card-text">{{ historia.historia_corta|truncatechars:100 }}</p>
+                    <p class="fw-bold text-primary">"{{ historia.frase_celebre|truncatechars:80 }}"</p>
+                    <a href="{% url 'historia_detalle' historia.id %}" class="btn btn-primary w-100">
+                        <i class="fas fa-book-open"></i> Ver Historia
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="alert alert-warning text-center">
+                <h4>📖 No hay historias disponibles</h4>
+                <p>Agrega historias desde el panel de administración.</p>
+                <a href="{% url 'admin:core_historiaexito_add' %}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus"></i> Agregar Historia
+                </a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
