@@ -133,15 +133,9 @@ SITIO_NOMBRE = "CodeCrack"
 SITIO_LOGO = "🚀"
 
 # ==================== CONFIGURACIÓN DE EMAIL ====================
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True
-EMAIL_USE_TLS = False
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'tu-email@gmail.com')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'tu-contraseña-app')
-DEFAULT_FROM_EMAIL = f'CodeCrack <{os.getenv("EMAIL_HOST_USER", "tu-email@gmail.com")}>'
-EMAIL_TIMEOUT = 30
+# Usamos Resend API (HTTPS) porque Render bloquea SMTP
+RESEND_API_KEY = os.getenv('RESEND_API_KEY', '')
+DEFAULT_FROM_EMAIL = 'CodeCrack <onboarding@resend.dev>'
 
 # ==================== CONFIGURACIÓN DE TOKENS ====================
 PASSWORD_RESET_TIMEOUT = 86400

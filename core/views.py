@@ -6,7 +6,6 @@ from django.db.models import Count, Q, F
 from django.utils import timezone
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator
-from django.core.mail import send_mail
 from django.conf import settings
 from django.http import FileResponse, Http404
 from django.urls import reverse
@@ -15,6 +14,7 @@ from django.template.loader import render_to_string
 import os
 from datetime import date, timedelta
 import random
+import resend
 
 from .models import *
 from .forms import *
@@ -32,7 +32,7 @@ def crear_notificacion(usuario, tipo, mensaje, enlace=None):
 
 
 def enviar_codigo_confirmacion(user):
-    """Envía el código de confirmación al usuario"""
+    """Envía el código de confirmación al usuario vía Resend API"""
     # Crear o actualizar código
     codigo_obj, created = CodigoConfirmacion.objects.get_or_create(usuario=user)
     # Generar nuevo código siempre
@@ -63,21 +63,21 @@ El equipo de CodeCrack
     """
 
     try:
-        send_mail(
-            asunto,
-            mensaje,
-            settings.DEFAULT_FROM_EMAIL,
-            [user.email],
-            fail_silently=False,
-        )
+        resend.api_key = settings.RESEND_API_KEY
+        resend.Emails.send({
+            "from": settings.DEFAULT_FROM_EMAIL,
+            "to": [user.email],
+            "subject": asunto,
+            "text": mensaje,
+        })
         return True
     except Exception as e:
-        print(f"Error al enviar email: {e}")
+        print(f"Error al enviar email con Resend: {e}")
         return False
 
 
 def enviar_codigo_recuperacion(user):
-    """Envía el código de recuperación al usuario"""
+    """Envía el código de recuperación al usuario vía Resend API"""
     # Crear nuevo código
     codigo_obj = CodigoRecuperacion.objects.create(
         usuario=user,
@@ -106,16 +106,16 @@ El equipo de CodeCrack
     """
 
     try:
-        send_mail(
-            asunto,
-            mensaje,
-            settings.DEFAULT_FROM_EMAIL,
-            [user.email],
-            fail_silently=False,
-        )
+        resend.api_key = settings.RESEND_API_KEY
+        resend.Emails.send({
+            "from": settings.DEFAULT_FROM_EMAIL,
+            "to": [user.email],
+            "subject": asunto,
+            "text": mensaje,
+        })
         return True
     except Exception as e:
-        print(f"Error al enviar email: {e}")
+        print(f"Error al enviar email con Resend: {e}")
         return False
 
 
